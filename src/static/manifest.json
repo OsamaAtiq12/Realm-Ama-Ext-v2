@@ -4,7 +4,7 @@
     "description": "Realm-ama-ext",
     "version": "1.0.0",
     "action" : {
-        "default_popup": "popup.html",
+       
         "default_title": "Realm-ama-ext",
         "default_icon" : "icon.png"
     },

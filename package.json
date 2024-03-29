@@ -9,6 +9,7 @@
     "build": "webpack --watch --progress --config webpack.prod.js"
   },
   "devDependencies": {
+    "@svgr/webpack": "^8.1.0",
     "@types/chrome": "^0.0.188",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
@@ -22,11 +23,14 @@
     "style-loader": "^3.3.1",
     "ts-loader": "^9.3.0",
     "typescript": "^4.6.4",
+    "url-loader": "^4.1.1",
     "webpack": "^5.72.1",
     "webpack-cli": "^4.9.2",
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
+    "@heathmont/moon-core-tw": "^10.14.0",
+    "@heathmont/moon-icons-tw": "^9.28.6",
     "autoprefixer": "^10.4.7",
     "postcss": "^8.4.14",
     "react-router-dom": "6.2",

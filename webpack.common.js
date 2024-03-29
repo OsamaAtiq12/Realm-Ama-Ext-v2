@@ -11,10 +11,26 @@ module.exports = {
         options: path.resolve('src/options/index.tsx'),
         background: path.resolve('src/background/background.ts'),
         contentScript: path.resolve('src/contentScript/contentScript.ts'),
-        newTab: path.resolve('src/tabs/index.tsx'),
+        
     },
     module: {
         rules: [
+
+            {
+                test: /\.svg$/,
+                use: ['@svgr/webpack'],
+              },
+              {
+                test: /\.(png|jpe?g|gif)$/i,
+                use: [
+                  {
+                    loader: 'url-loader',
+                    options: {
+                      limit: 8192,
+                    },
+                  },
+                ],
+              },
             {
                 use: 'ts-loader',
                 test: /\.tsx?$/,
@@ -60,7 +76,7 @@ module.exports = {
         ...getHtmlPlugins([
             'popup',
             'options',
-            'newTab'
+            
         ])
     ],
     resolve: {
@@ -79,7 +95,7 @@ module.exports = {
 
 function getHtmlPlugins(chunks) {
     return chunks.map(chunk => new HtmlPlugin({
-        title: 'React Extension',
+        title: 'Realm-Ama-Ext',
         filename: `${chunk}.html`,
         chunks: [chunk]
     }))

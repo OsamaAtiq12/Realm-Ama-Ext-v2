@@ -1,21 +1,21 @@
 {
     "manifest_version": 3,
-    "name": "react-boilerplate",
-    "description": "react-boilerplate for chrome extension",
+    "name": "Realm-ama-ext",
+    "description": "Realm-ama-ext",
     "version": "1.0.0",
     "action" : {
         "default_popup": "popup.html",
-        "default_title": "React Boilerplate",
+        "default_title": "Realm-ama-ext",
         "default_icon" : "icon.png"
     },
-    "chrome_url_overrides": {
-        "newtab": "newTab.html"
-    },
+  
     "permissions": [
         "tabs",
         "bookmarks",
         "storage",
-        "identity"
+        "identity",
+        "management",
+        "windows"
     ],
     "icons": {
         "16" : "icon.png",
@@ -31,5 +31,18 @@
             "matches": ["<all_urls>"],
             "js": ["contentScript.js"]
         }
-    ]
+    ],
+
+    
+    "commands": {
+        "open_extension": {
+          "suggested_key": {
+            "default": "Ctrl+Shift+E",
+            "mac": "MacCtrl+Shift+E"
+          },
+          "description": "Open the extension"
+        }
+      }
+
+      
 }

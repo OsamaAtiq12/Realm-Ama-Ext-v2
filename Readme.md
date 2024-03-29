@@ -1,11 +1,16 @@
-# ReactJS Chrome Extension
+# Project Name
+Realm-Ama-Ext
+## Technologies Used
 
-## React 18 and TailwindCSS Supported
+- React
+- Tailwind CSS
+- TypeScript
 
-- [x] Webpack Compatible
-- [x] TailwindCSS 3.0 Compatible
+## Setup
 
-Subscribe to my youtube channel
-https://bit.ly/manshu
+```bash
+git clone https://github.com/OsamaAtiq12/Realm-Ama-Ext-v2.git
 
-<a href="https://www.buymeacoffee.com/batraio" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
+npm install
+
+npm build

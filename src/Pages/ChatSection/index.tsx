@@ -7,6 +7,7 @@ import { Input, Textarea } from "@heathmont/moon-core-tw";
 import SubmitIcon from "./Assets/SubmitIcon";
 import Clipicon from "./Assets/clipicon";
 import ShareChatModal from "../../Components/ShareChatModal";
+import ChatLoading from "../../Components/ChatLoading";
 
 interface ChatSectionProps {}
 
@@ -21,6 +22,7 @@ function ChatSection(props: ChatSectionProps) {
   const [inputValue, setInputValue] = useState<string>("");
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [chatMessages, setChatMessages] = useState<string[]>([]);
+  const [loadingStates, setLoadingStates] = useState<boolean[]>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const closeModal = () => setIsOpen(false);
@@ -30,16 +32,29 @@ function ChatSection(props: ChatSectionProps) {
     setSelectedQuestion(question);
     setInputValue(question);
     setSubmitted(false);
-    if (textareaRef.current) {
-      adjustTextareaHeight(textareaRef.current);
-    }
   };
 
   const handleSubmit = () => {
     if (selectedQuestion || inputValue) {
       setSubmitted(true);
-      setChatMessages([...chatMessages, inputValue]); // Add the submitted message to chat messages
+      const newChatMessages = [...chatMessages, inputValue];
+      setChatMessages(newChatMessages); // Add the submitted message to chat messages
       setInputValue(""); // Clear the input field after submission
+
+      // Set loading state for the new message
+      setLoadingStates([...loadingStates, true]);
+
+      // Simulate loading for 2 seconds
+      setTimeout(() => {
+        // Find the index of the last added message
+        const index = newChatMessages.length - 1;
+        // Update loading state for the corresponding message
+        setLoadingStates((loadingStates) => {
+          const newLoadingStates = [...loadingStates];
+          newLoadingStates[index] = false;
+          return newLoadingStates;
+        });
+      }, 2000);
     }
   };
 
@@ -52,7 +67,30 @@ function ChatSection(props: ChatSectionProps) {
     <div className="px-8 py-5 bg-white rounded-lg">
       <GptTypeDropDown />
 
-      <div className="border-2 rounded-[16px] p-5 mt-9 min-h-[250px]">
+      <div className="border-2 rounded-[16px] p-5 mt-6 h-[326px] overflow-auto">
+        {/* Chat messages */}
+        {chatMessages.map((message, index) => (
+          <div key={index}>
+            <div className="text-sm mb-2 text-left p-3 text-white bg-[#5C1EDF] border rounded-tl-lg rounded-tr-lg rounded-bl-lg relative">
+              {message}
+            </div>
+            {/* Loading indicator for each message */}
+            {loadingStates[index] && (
+              <div className="flex items-center justify-start mt-6">
+                <img
+                  className="h-6 w-6 rounded-full mr-2"
+                  src={
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKlTNRaX-J4l3Uj-RbSU5vvsZtpioufqc9yw&usqp=CAU"
+                  }
+                  alt=""
+                />{" "}
+                <ChatLoading />{" "}
+                {/* Assuming ChatLoading component is responsive */}
+              </div>
+            )}
+          </div>
+        ))}
+
         <div className="flex flex-col items-center justify-center">
           {!submitted && (
             <div>
@@ -110,31 +148,20 @@ function ChatSection(props: ChatSectionProps) {
         </div>
       </div>
 
-      {/* Chat messages */}
-      <div className="overflow-y-auto max-h-[200px] mt-3">
-        {chatMessages.map((message, index) => (
-          <div key={index} className="text-sm text-gray-800 mb-2">
-            {message}
-          </div>
-        ))}
-      </div>
-
+      {/* Input field for new messages */}
       <div className="flex items-center p-2 bg-white relative mt-[20px]">
         <div className="absolute left-[15px] bottom-[19px]  z-5 ">
           <Clipicon />
         </div>
 
         <Textarea
-          ref={textareaRef}
-          className="flex-1 focus:ring-0 bg-white px-9  py-0 pt-[13px] h-12"
-       
+          className="flex-1 focus:ring-0 bg-white px-7 py-0 pt-[10px] h-12 overflow-auto"
           value={inputValue}
           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
             setInputValue(e.target.value);
-            adjustTextareaHeight(e.target);
           }}
         />
-        <div className="absolute right-[15px] bottom-[15px] z-5 ">
+        <div className="absolute right-[25px] bottom-[15px] z-5 ">
           <button
             className={`bg-purple-600 text-white rounded-full p-2 ${
               !inputValue && "opacity-50 cursor-not-allowed"

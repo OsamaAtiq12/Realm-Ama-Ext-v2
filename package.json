@@ -11,11 +11,12 @@
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
     "@types/chrome": "^0.0.188",
-    "@types/react": "^18.0.9",
+    "@types/react": "^18.2.73",
     "@types/react-dom": "^18.0.4",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.1",
+    "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
     "postcss-loader": "^7.0.0",
     "react": "^18.1.0",
@@ -32,6 +33,7 @@
     "@heathmont/moon-core-tw": "^10.14.0",
     "@heathmont/moon-icons-tw": "^9.28.6",
     "autoprefixer": "^10.4.7",
+    "ignore-loader": "^0.1.2",
     "postcss": "^8.4.14",
     "react-router-dom": "6.2",
     "tailwindcss": "^3.0.24"

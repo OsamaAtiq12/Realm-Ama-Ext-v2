@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 body {
-    height: 400px;
-    width: 400px;
+    height: 100%;
+    width: 100%;
 }
 
 :root {
@@ -84,4 +84,26 @@ body {
     --shadow-lg: 0 8px 24px -6px rgb(0 0 0 / 0.16), 0 0 1px rgb(0 0 0 / 0.4);
     --shadow-xl: 0 32px 32px -8px rgb(0 0 0 / 0.08),
       0 0 32px -8px rgb(0 0 0 / 0.12), 0 0 1px rgb(0 0 0 / 0.2);
+  }
+  
+
+  @keyframes pulse-up-down {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+  
+  .animate-pulse-up-down {
+    animation: pulse-up-down 1s ease-in-out infinite;
+  }
+  
+  .delay-300ms {
+    animation-delay: 300ms;
+  }
+  
+  .delay-600ms {
+    animation-delay: 600ms;
+  }
+  
+  .delay-900ms {
+    animation-delay: 900ms;
   }

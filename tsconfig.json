@@ -1,16 +1,18 @@
 {
     "compilerOptions": {
+        
         "jsx": "react",
         "module": "es6",
         "target": "es6",
         "moduleResolution": "node",
         "esModuleInterop": true,
-        "typeRoots": ["./types", "./node_modules/@types"]
+        "typeRoots": ["./types", "./node_modules/@types"],
+        "types": ["chrome"]
     },
     "include": [
         "src/**/*.ts", 
         "src/**/*.tsx",
-        "src", ".d.ts"
-, "tsconfig.json"    ],
+        "src/**/*.d.ts"
+    ],
     "exclude": ["node_modules"],
 }

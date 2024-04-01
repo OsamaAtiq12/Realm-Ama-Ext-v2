@@ -17,6 +17,11 @@ module.exports = {
         rules: [
 
             {
+                test: /\.resource$/,
+                type: 'asset/resource',
+              },
+
+            {
                 test: /\.svg$/,
                 use: ['@svgr/webpack'],
               },

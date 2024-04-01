@@ -14,7 +14,7 @@ const name = url.split("/").pop();
   return (
     <div className="rounded-[8px] bg-[#E6E2E1] mt-[12px] mb-[16px] p-[16px]">
       <div className="flex gap-2 items-center">
-        <img className="h-12 w-12 rounded-full" src={"./Assets/X.png"} alt="" />
+        <img className="h-12 w-12 rounded-full" src={"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKlTNRaX-J4l3Uj-RbSU5vvsZtpioufqc9yw&usqp=CAU"} alt="" />
         <div className="flex flex-col items-center ">
           <span className="text-[16px] font-semibold">{name}</span>
 

@@ -27,7 +27,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                         url: 'chrome-extension://ppghgnolhpnaeclchgkocjaedmgibpkf/popup.html',
                         type: 'popup',
                         width: 453,
-                        height: 900,
+                        height: 890,
                         left: screenWidth - 400, // Position the window at the extreme right
                         top: 80 // Set the top position of the window
                     });

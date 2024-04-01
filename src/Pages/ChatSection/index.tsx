@@ -1,9 +1,9 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import GptTypeDropDown from "../../Components/GptTypeDropDown";
 import NewChat from "./Assets/NewChat";
 import Share from "./Assets/Share";
-import { Input } from "@heathmont/moon-core-tw";
+import { Input, Textarea } from "@heathmont/moon-core-tw";
 import SubmitIcon from "./Assets/SubmitIcon";
 import Clipicon from "./Assets/clipicon";
 import ShareChatModal from "../../Components/ShareChatModal";
@@ -13,29 +13,39 @@ interface ChatSectionProps {}
 const presetQuestions: string[] = [
   "What drives your passion for space exploration, and how do you see the future of human settlement beyond Earth?",
   "What do you believe are the most significant challenges humanity will face in the next few decades, and how can technology address them?",
-  "What advice would you give to aspiring entrepreneurs who are looking to make a significant impact in the world with their ventures?"
 ];
 
 function ChatSection(props: ChatSectionProps) {
-  const [selectedQuestion, setSelectedQuestion] = useState<string>(""); // State to track selected question
-  const [inputValue, setInputValue] = useState<string>(""); // State to track input field value
-  const [submitted, setSubmitted] = useState<boolean>(false); // State to track submission
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [selectedQuestion, setSelectedQuestion] = useState<string>("");
+  const [inputValue, setInputValue] = useState<string>("");
+  const [submitted, setSubmitted] = useState<boolean>(false);
+  const [chatMessages, setChatMessages] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const closeModal = () => setIsOpen(false);
   const openModal = () => setIsOpen(true);
 
   const handleQuestionClick = (question: string) => {
-    setSelectedQuestion(question); // Set selected question
-    setInputValue(question); // Set input field value to the selected question
-    setSubmitted(false); // Reset submission state
+    setSelectedQuestion(question);
+    setInputValue(question);
+    setSubmitted(false);
+    if (textareaRef.current) {
+      adjustTextareaHeight(textareaRef.current);
+    }
   };
 
-  // Function to handle submit button click
   const handleSubmit = () => {
     if (selectedQuestion || inputValue) {
-      setSubmitted(true); // Set submission state to true if a question is selected or input value is provided
+      setSubmitted(true);
+      setChatMessages([...chatMessages, inputValue]); // Add the submitted message to chat messages
+      setInputValue(""); // Clear the input field after submission
     }
+  };
+
+  const adjustTextareaHeight = (textarea) => {
+    textarea.style.height = "auto"; // Reset the height to auto
+    textarea.style.height = textarea.scrollHeight + "px"; // Set the height to match the content
   };
 
   return (
@@ -44,7 +54,7 @@ function ChatSection(props: ChatSectionProps) {
 
       <div className="border-2 rounded-[16px] p-5 mt-9 min-h-[250px]">
         <div className="flex flex-col items-center justify-center">
-          {!submitted && ( // Render if submission hasn't occurred
+          {!submitted && (
             <div>
               <h1 className="text-[18px] font-semibold">Ask Elon Anything</h1>
               <span className="text-[12px] font-normal">
@@ -62,7 +72,7 @@ function ChatSection(props: ChatSectionProps) {
                         selectedQuestion === question ? "white" : "initial",
                     }}
                     className="max-w-[250px] text-[12px] font-normal p-[12px] rounded-[8px] mb-3 cursor-pointer"
-                    onClick={() => handleQuestionClick(question)} // Handle click on question
+                    onClick={() => handleQuestionClick(question)}
                   >
                     {question}
                   </div>
@@ -73,7 +83,7 @@ function ChatSection(props: ChatSectionProps) {
         </div>
       </div>
 
-      <div className="flex justify-center gap-2 pt-12">
+      <div className="flex justify-center gap-2 pt-3">
         <div className="bg-[#ECEBEC] text-[12px] font-semibold flex items-center py-1 px-[7px] rounded-[28px]">
           <div className="flex items-center gap-[3px]">
             <span>
@@ -100,21 +110,31 @@ function ChatSection(props: ChatSectionProps) {
         </div>
       </div>
 
-      <div className="flex items-center p-2 bg-white relative   mt-[20px]">
-        <div className="absolute left-4 z-5 ">
+      {/* Chat messages */}
+      <div className="overflow-y-auto max-h-[200px] mt-3">
+        {chatMessages.map((message, index) => (
+          <div key={index} className="text-sm text-gray-800 mb-2">
+            {message}
+          </div>
+        ))}
+      </div>
+
+      <div className="flex items-center p-2 bg-white relative mt-[20px]">
+        <div className="absolute left-[15px] bottom-[19px]  z-5 ">
           <Clipicon />
         </div>
 
-        <Input
-          className="flex-1 focus:ring-0 bg-white px-8 "
-          placeholder="Ask a question..."
-          type="text"
-          value={inputValue} // Set input field value
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setInputValue(e.target.value)
-          } // Handle input field change
+        <Textarea
+          ref={textareaRef}
+          className="flex-1 focus:ring-0 bg-white px-9  py-0 pt-[13px] h-12"
+       
+          value={inputValue}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+            setInputValue(e.target.value);
+            adjustTextareaHeight(e.target);
+          }}
         />
-        <div className="absolute right-4 z-5 ">
+        <div className="absolute right-[15px] bottom-[15px] z-5 ">
           <button
             className={`bg-purple-600 text-white rounded-full p-2 ${
               !inputValue && "opacity-50 cursor-not-allowed"

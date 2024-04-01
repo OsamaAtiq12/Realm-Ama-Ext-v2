@@ -5,6 +5,9 @@ import Tweet from "./Assets/tweet";
 import Calendar from "./Assets/Calendar";
 import BuyTweetsModal from "../BuyTweetsModal";
 function Profile() {
+  const url = "https://twitter.com/elonmusk";
+const name = url.split("/").pop();
+; 
   const [isOpen, setIsOpen] = useState(false);
   const closeModal = () => setIsOpen(false);
   const openModal = () => setIsOpen(true);
@@ -13,10 +16,10 @@ function Profile() {
       <div className="flex gap-2 items-center">
         <img className="h-12 w-12 rounded-full" src={"./Assets/X.png"} alt="" />
         <div className="flex flex-col items-center ">
-          <span className="text-[16px] font-semibold">Elon Musk</span>
+          <span className="text-[16px] font-semibold">{name}</span>
 
           <span className="text-[#241E30CC] text-[14px] font-normal">
-            @elonmusk
+            @{name}
           </span>
         </div>
       </div>

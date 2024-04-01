@@ -35,8 +35,8 @@ function CustomDropdown() {
               </div>
 
               <div>
-                <Dropdown.Options className="font-semibold bg-white text-[14px]  mr-2 ">
-                  <Dropdown.Option>
+                <Dropdown.Options className="font-semibold bg-white text-[14px]  mr-2 ml-10 ">
+                  <Dropdown.Option >
                     <div className="p-4 shadow-md rounded-[8px]">
                       <div className="flex gap-2 items-center justify-between  rounded-lg  bg-[#E8E2F5] p-3">
                         <span className="text-sm ">

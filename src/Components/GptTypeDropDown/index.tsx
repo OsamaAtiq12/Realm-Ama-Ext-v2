@@ -29,7 +29,7 @@ function GptTypeDropDown() {
   return (
     <div>
       <div className="flex justify-center">
-        <Dropdown value={option} onChange={setOption} className="w-[130px]">
+        <Dropdown value={option} onChange={setOption} className="w-[140px]">
           {({ open }) => (
             <>
               <Dropdown.Select
@@ -46,7 +46,7 @@ function GptTypeDropDown() {
               </Dropdown.Select>
               <Dropdown.HiddenInput name="value" />
 
-              <Dropdown.Options className="bg-white rounded-[8px] p-0">
+              <Dropdown.Options className="bg-white rounded-[8px] p-0 right-[-33px]">
                 {Options.map((packages, index) => (
                   <Dropdown.Option value={packages.type} key={index}>
                     {({ selected }) => (

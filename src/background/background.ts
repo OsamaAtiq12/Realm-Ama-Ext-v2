@@ -24,7 +24,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
                     // Create the popup window at the extreme right
                     chrome.windows.create({
-                        url: 'chrome-extension://ppghgnolhpnaeclchgkocjaedmgibpkf/popup.html',
+                        url: chrome.runtime.getURL('popup.html'),
                         type: 'popup',
                         width: 453,
                         height: 890,

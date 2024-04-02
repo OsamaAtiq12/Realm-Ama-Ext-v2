@@ -31,7 +31,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
               url: chrome.runtime.getURL("popup.html"),
               type: "popup",
               width: 453,
-              height: 995, // Set the height to the screen height
+              height: 1000, // Set the height to the screen height
               left: screenWidth - 400, // Position the window at the extreme right
               top: 0, // Set the top position of the window to 0
             }, function(window) {

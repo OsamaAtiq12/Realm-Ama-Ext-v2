@@ -11,7 +11,7 @@ function Profile() {
   const closeModal = () => setIsOpen(false);
   const openModal = () => setIsOpen(true);
   return (
-    <div className="rounded-[8px] bg-[#E6E2E1] mt-[12px] mb-[16px] p-[16px]">
+    <div className="rounded-[8px] bg-[#E6E2E1] mt-[12px] mb-[10px] p-[16px]">
       <div className="flex gap-2 items-center">
         <img
           className="h-12 w-12 rounded-full"

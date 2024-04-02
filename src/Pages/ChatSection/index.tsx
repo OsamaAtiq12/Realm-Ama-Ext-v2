@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import GptTypeDropDown from "../../Components/GptTypeDropDown";
 import NewChat from "./Assets/NewChat";
 import Share from "./Assets/Share";
@@ -9,6 +9,9 @@ import Clipicon from "./Assets/clipicon";
 import ShareChatModal from "../../Components/ShareChatModal";
 import ChatLoading from "../../Components/ChatLoading";
 import Arrow from "./Assets/arrow";
+import { data } from "autoprefixer";
+import CustomTextArea from "../../Components/TextArea";
+
 interface ChatSectionProps {}
 
 const presetQuestions: string[] = [
@@ -22,10 +25,12 @@ function ChatSection(props: ChatSectionProps) {
   const [selectedQuestion, setSelectedQuestion] = useState<string>("");
   const [inputValue, setInputValue] = useState<string>("");
   const [submitted, setSubmitted] = useState<boolean>(false);
-  const [chatMessages, setChatMessages] = useState<string[]>([]);
-  const [loadingStates, setLoadingStates] = useState<boolean[]>([]);
+  const [chatMessages, setChatMessages] = useState<
+    { type: string; message: string }[]
+  >([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
+  const [botres, setbotres] = useState<string>("");
 
   const clearChat = () => {
     setChatMessages([]);
@@ -63,29 +68,82 @@ function ChatSection(props: ChatSectionProps) {
       }, 0);
     }
   };
+
+  function* streamParagraph(paragraph: string): Generator<string, void, unknown> {
+    for (let char of paragraph) {
+      yield char;
+    }
+  }
+  
+  // Example usage:
+  const paragraph: string = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+  const stream: Generator<string, void, unknown> = streamParagraph(paragraph);
+  
+  // Iterate over the stream and log each character
+  for (let char of stream) {
+    console.log(char);
+  }
+  
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("https://ama-lnlobhkrga-uc.a.run.app", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: "elon musk",
+          message: inputValue,
+        }),
+      });
+
+      const res = await response.json();
+
+      setbotres(res.data);
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = () => {
     if (selectedQuestion || inputValue) {
       setSubmitted(true);
-      const newChatMessages = [...chatMessages, inputValue];
+      const newChatMessages = [
+        ...chatMessages,
+        { type: "user", message: inputValue },
+      ];
       setChatMessages(newChatMessages); // Add the submitted message to chat messages
       setInputValue(""); // Clear the input field after submission
 
       // Set loading state for the new message
-      setLoadingStates([...loadingStates, true]);
+      setLoading(true);
 
-      // Simulate loading for 2 seconds
-      setTimeout(() => {
-        // Find the index of the last added message
-        const index = newChatMessages.length - 1;
-        // Update loading state for the corresponding message
-        setLoadingStates((loadingStates) => {
-          const newLoadingStates = [...loadingStates];
-          newLoadingStates[index] = false;
-          return newLoadingStates;
+      // Call fetchData here
+      fetchData()
+        .then(() => {
+          // After receiving the response, set loading state back to false
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+          setLoading(false);
         });
-      }, 2000);
     }
   };
+
+  useEffect(() => {
+    if (botres) {
+      const newChatMessages = [
+        ...chatMessages,
+        { type: "bot", message: botres },
+      ];
+      setChatMessages(newChatMessages);
+    }
+  }, [botres]);
 
   return (
     <div className="px-8 py-5 bg-white rounded-lg">
@@ -94,32 +152,43 @@ function ChatSection(props: ChatSectionProps) {
       <div
         className={`${
           !submitted ? "border-2" : ""
-        } rounded-[16px] p-5 mt-2 h-[460px] overflow-auto`}
+        } rounded-[16px] p-3 mt-2 h-[460px] overflow-auto`}
       >
-        {/* Chat messages */}
-        {chatMessages.map((message, index) => (
+        {chatMessages.map((chatMessage, index) => (
           <div key={index}>
-            <div className="flex justify-end">
-              <div className="text-sm mb-2 text-left p-3 inline-block  text-white font-normal text-[12px] bg-[#5C1EDF] border rounded-tl-lg rounded-tr-lg rounded-bl-lg relative">
-                {message}
+            {chatMessage.type === "user" ? (
+              <div className="flex justify-end pt-5 ">
+                <div className="text-sm mb-2 text-left p-3 inline-block  text-white font-normal text-[12px] bg-[#5C1EDF] border rounded-tl-lg rounded-tr-lg rounded-bl-lg relative">
+                  {chatMessage.message}
+                </div>
               </div>
-            </div>
-            {/* Loading indicator for each message */}
-            {loadingStates[index] && (
-              <div className="flex items-center justify-start mt-6">
-                <img
-                  className="h-6 w-6 rounded-full mr-2"
-                  src={
-                    "https://s3-alpha-sig.figma.com/img/e995/f598/85db47d776bf48203cc4e94987f45976?Expires=1713139200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=k3LBMZBJ1h-jewz5lof69GhhtDBrfzaAbBESer37HdhckqLFzKtgaOOOSvVgv1pz8czBBIPx1i4IeapwKenXhVEJj0yoF3vjUpA5cREI0b74T1ynZ8e7hu1n7FgpAHovsFVl9uA6~B1A8MZldsa~h9MiQKpXJBn54ZNkZo4vghDD1s4yjiCP17P7fEqqcgJCZiuhWbHnZGMmvtnyIOHY1-jrtPrpnblBLF6k~HmrvpCpO83MpEGY-feWWM4ZLAUvB9bw06jziPy6b1UGUL7nnUz-Y~HWSuzStffT6Iib9ckO0CrZx-4cLNVCZ~tfA4tZAeUofDT0~YCX5YGPp3fYVg__"
-                  }
-                  alt=""
-                />{" "}
-                <ChatLoading />{" "}
-                {/* Assuming ChatLoading component is responsive */}
+            ) : (
+              <div className="flex justify-start pt-5">
+                 <img
+              className="h-6 w-6 rounded-full mr-2 mb-[10px] self-end"
+              src="https://s3-alpha-sig.figma.com/img/e995/f598/85db47d776bf48203cc4e94987f45976?Expires=1713139200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=k3LBMZBJ1h-jewz5lof69GhhtDBrfzaAbBESer37HdhckqLFzKtgaOOOSvVgv1pz8czBBIPx1i4IeapwKenXhVEJj0yoF3vjUpA5cREI0b74T1ynZ8e7hu1n7FgpAHovsFVl9uA6~B1A8MZldsa~h9MiQKpXJBn54ZNkZo4vghDD1s4yjiCP17P7fEqqcgJCZiuhWbHnZGMmvtnyIOHY1-jrtPrpnblBLF6k~HmrvpCpO83MpEGY-feWWM4ZLAUvB9bw06jziPy6b1UGUL7nnUz-Y~HWSuzStffT6Iib9ckO0CrZx-4cLNVCZ~tfA4tZAeUofDT0~YCX5YGPp3fYVg__"
+              alt=""
+            />
+                <div className="text-sm mb-2 text-left p-3 inline-block  text-[#241E30] font-normal text-[12px] bg-[#241E300D] border rounded-tl-lg rounded-tr-lg rounded-br-lg relative">
+                  {chatMessage.message}
+
+                 
+                </div>
               </div>
             )}
           </div>
         ))}
+
+        {loading && (
+          <div className="flex items-center justify-start mt-6">
+            <img
+              className="h-6 w-6 rounded-full mr-2"
+              src="https://s3-alpha-sig.figma.com/img/e995/f598/85db47d776bf48203cc4e94987f45976?Expires=1713139200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=k3LBMZBJ1h-jewz5lof69GhhtDBrfzaAbBESer37HdhckqLFzKtgaOOOSvVgv1pz8czBBIPx1i4IeapwKenXhVEJj0yoF3vjUpA5cREI0b74T1ynZ8e7hu1n7FgpAHovsFVl9uA6~B1A8MZldsa~h9MiQKpXJBn54ZNkZo4vghDD1s4yjiCP17P7fEqqcgJCZiuhWbHnZGMmvtnyIOHY1-jrtPrpnblBLF6k~HmrvpCpO83MpEGY-feWWM4ZLAUvB9bw06jziPy6b1UGUL7nnUz-Y~HWSuzStffT6Iib9ckO0CrZx-4cLNVCZ~tfA4tZAeUofDT0~YCX5YGPp3fYVg__"
+              alt=""
+            />
+            <ChatLoading /> {/* Assuming ChatLoading component is responsive */}
+          </div>
+        )}
 
         <div className="flex flex-col items-center justify-center">
           {!submitted && (
@@ -187,7 +256,7 @@ function ChatSection(props: ChatSectionProps) {
 
       {/* Input field for new messages */}
       <div className="flex items-center p-2 bg-white relative mt-[10px]">
-        <div className="absolute left-[12px] bottom-[20px] z-5">
+        <div className="absolute left-[12px] bottom-[23px] z-5">
           <div onClick={handleClipiconClick}>
             <Clipicon />
           </div>
@@ -206,30 +275,16 @@ function ChatSection(props: ChatSectionProps) {
           }}
         />
 
-        <Textarea
-          ref={textareaRef}
-          placeholder="Ask Elon a Question"
-          className="flex-1 focus:outline-0 focus:outline-[#5C1EDF] text-[#241E30] outline-0 bg-white px-7 py-0 pt-[13px] overflow-hidden"
-          style={{ minHeight: "48px", height: inputValue ? "auto" : "48px" }}
-          value={inputValue}
-          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-            setInputValue(e.target.value);
-            e.target.style.height = "auto";
-            e.target.style.height = e.target.scrollHeight + "px";
-            if (e.target.value === "") {
-              e.target.style.height = "48px";
-            }
-          }}
-          onPaste={(e: React.ClipboardEvent<HTMLTextAreaElement>) => {
-            setTimeout(() => {
-              e.currentTarget.style.height = "auto";
-              e.currentTarget.style.height =
-                e.currentTarget.scrollHeight + "px";
-            }, 0);
-          }}
-        />
+<CustomTextArea
+  value={inputValue}
+  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInputValue(e.target.value);
+  }}
+ 
+  placeholder="Ask Elon a Question"
+/>
 
-        <div className="absolute right-[10px] bottom-[15px] z-5 ">
+        <div className="absolute right-[10px] bottom-[18px] z-5 ">
           <button
             className={`bg-[#5C1EDFB2] text-white rounded-full p-2 ${
               !inputValue && "opacity-50 cursor-not-allowed"

@@ -20,7 +20,7 @@ const ShareChatModal: React.FC<ShareChatModalProps> = ({ isOpen, setIsOpen, clos
         <Modal.Panel className='bg-white shadow-lg'>
           <div className="p-4 ">
             <div className="flex justify-between">
-              <h3 className="text-moon-18 text-bulma font-medium">
+              <h3 className="text-moon-18 text-bulma font-medium text-[#241E30]">
                 Share link to chat
               </h3>
               <span className="cursor-pointer" onClick={closeModal}>
@@ -29,7 +29,7 @@ const ShareChatModal: React.FC<ShareChatModalProps> = ({ isOpen, setIsOpen, clos
             </div>
           </div>
           <div className="p-4">
-            <p className="text-moon-sm text-trunks">
+            <p className="text-moon-sm  text-[#241E30CC]">
               Messages you send after creating your link won't be shared. Anyone with the URL will be able to view the shared chat.
             </p>
           </div>

@@ -29,16 +29,18 @@ const GptTypeDropDown = () => {
   };
 
   return (
-    <div className="relative flex justify-center ">
+    <div className="relative flex justify-center">
       <div>
         <button
           type="button"
-          className="inline-flex justify-center w-[243 px] rounded-[20px] border border-gray-300 bg-[#241E300D] text-sm px-4 py-2 shadow-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
+          className="inline-flex justify-center  rounded-[20px] border border-gray-300 bg-[#241E300D] text-sm px-4 py-2 shadow-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
           onClick={toggleDropdown}
         >
           <span className="flex items-center gap-1">
             {selectedOption.icon}
-            <span className="font-semibold">{selectedOption.type}</span>
+            <span className="font-semibold text-[#241E30]">
+              {selectedOption.type}
+            </span>
           </span>
           <svg
             className="-mr-1 ml-2 h-5 w-5"
@@ -57,7 +59,7 @@ const GptTypeDropDown = () => {
       </div>
 
       {isOpen && (
-        <div className="origin-top-right absolute right-50 top-14 w-[243px] rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+        <div className="origin-top-right z-5 absolute right-[45px] top-14 w-[243px] rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
           <div
             className="py-1"
             role="menu"
@@ -65,18 +67,31 @@ const GptTypeDropDown = () => {
             aria-labelledby="options-menu"
           >
             {Options.map((option, index) => (
-              <button
+              <label
                 key={index}
-                onClick={() => handleOptionClick(option)}
-                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
                 role="menuitem"
               >
-                <div className="flex items-center gap-2">
-                  {option.icon}
-                  <span className="font-semibold">{option.type}</span>
+                <div>
+                  <div className="flex items-center gap-2">
+                    {option.icon}
+                    <span className="font-semibold text-[#241E30]">
+                      {option.type}
+                    </span>
+                  </div>
                 </div>
-                <p className="text-gray-500">{option.description}</p>
-              </button>
+                <div className="flex gap-2">
+                  <p className="text-[#241E30CC]">{option.description}</p>
+
+                  <input
+                    type="radio"
+                    value={option.type}
+                    checked={selectedOption.type === option.type}
+                    onChange={() => handleOptionClick(option)}
+                    className="form-radio h-4 w-4 accent-[#5C1EDF]"
+                  />
+                </div>
+              </label>
             ))}
           </div>
         </div>

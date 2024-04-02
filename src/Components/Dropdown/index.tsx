@@ -41,20 +41,18 @@ function CustomDropdown() {
                 <Dropdown.Options className="font-semibold bg-white text-[14px]  mr-2 ml-10  ">
                   <Dropdown.Option>
                     <div className="p-4 shadow-md rounded-[8px]">
-                      <div className="flex rounded-lg  items-center  bg-[#E8E2F5] p-3 gap-[10px]">
-                        <span className="flex-shrink-0">
+                      <div className="flex rounded-lg items-center bg-[#E8E2F5] p-3 pr-4   w-[270px] justify-between ">
+                        <span className="flex-shrink-0 text-[#241E30]">
                           Sign up to earn 50 bonus <br />
                           credits and 10 credits daily.
                         </span>
 
-                        <div>
-                          <button className="bg-[#7c3aed] text-white px-[12px] h-[28px] py-3 rounded-md flex items-center justify-center max-w-[61px] whitespace-nowrap">
-                            Sign up
-                          </button>
-                        </div>
+                        <button className="bg-[#5C1EDF] text-white px-[12px] h-[28px] py-3 rounded-md flex items-center justify-center max-w-[61px] whitespace-nowrap">
+                          Sign up
+                        </button>
                       </div>
                       <div className="mt-2">
-                        <h1 className="text-[22px] font-semibold">
+                        <h1 className="text-[22px] font-semibold text-[#241E30]">
                           You are on the{" "}
                           <span className="text-[#5C1EDF]">Free</span> plan
                         </h1>
@@ -66,7 +64,7 @@ function CustomDropdown() {
                       </div>
 
                       <div className="flex justify-end">
-                        <button className="bg-black basis-[50%]  text-white  py-2 rounded-md">
+                        <button className="bg-[#241E30] basis-[50%]  text-white  py-2 rounded-md">
                           Upgrade
                         </button>
                       </div>

@@ -3,12 +3,12 @@ import { useState, useRef } from "react";
 import GptTypeDropDown from "../../Components/GptTypeDropDown";
 import NewChat from "./Assets/NewChat";
 import Share from "./Assets/Share";
-import { Input, Textarea } from "@heathmont/moon-core-tw";
-import SubmitIcon from "./Assets/SubmitIcon";
+import { Textarea } from "@heathmont/moon-core-tw";
+
 import Clipicon from "./Assets/clipicon";
 import ShareChatModal from "../../Components/ShareChatModal";
 import ChatLoading from "../../Components/ChatLoading";
-
+import Arrow from "./Assets/arrow";
 interface ChatSectionProps {}
 
 const presetQuestions: string[] = [
@@ -26,8 +26,24 @@ function ChatSection(props: ChatSectionProps) {
   const [loadingStates, setLoadingStates] = useState<boolean[]>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
+
+  const clearChat = () => {
+    setChatMessages([]);
+  };
   const closeModal = () => setIsOpen(false);
   const openModal = () => setIsOpen(true);
+  const fileInputRef = useRef(null); // Reference to the file input element
+
+  const handleClipiconClick = () => {
+    // Programmatically trigger click on the file input element
+    fileInputRef.current.click();
+  };
+
+  const handleFileUpload = (event) => {
+    // Handle file upload logic here
+    const file = event.target.files[0];
+    console.log("Uploaded file:", file);
+  };
 
   const handleQuestionClick = (question: string) => {
     setSelectedQuestion(question);
@@ -78,7 +94,7 @@ function ChatSection(props: ChatSectionProps) {
       <div
         className={`${
           !submitted ? "border-2" : ""
-        } rounded-[16px] p-5 mt-2 h-[440px] overflow-auto`}
+        } rounded-[16px] p-5 mt-2 h-[460px] overflow-auto`}
       >
         {/* Chat messages */}
         {chatMessages.map((message, index) => (
@@ -94,7 +110,7 @@ function ChatSection(props: ChatSectionProps) {
                 <img
                   className="h-6 w-6 rounded-full mr-2"
                   src={
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKlTNRaX-J4l3Uj-RbSU5vvsZtpioufqc9yw&usqp=CAU"
+                    "https://s3-alpha-sig.figma.com/img/e995/f598/85db47d776bf48203cc4e94987f45976?Expires=1713139200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=k3LBMZBJ1h-jewz5lof69GhhtDBrfzaAbBESer37HdhckqLFzKtgaOOOSvVgv1pz8czBBIPx1i4IeapwKenXhVEJj0yoF3vjUpA5cREI0b74T1ynZ8e7hu1n7FgpAHovsFVl9uA6~B1A8MZldsa~h9MiQKpXJBn54ZNkZo4vghDD1s4yjiCP17P7fEqqcgJCZiuhWbHnZGMmvtnyIOHY1-jrtPrpnblBLF6k~HmrvpCpO83MpEGY-feWWM4ZLAUvB9bw06jziPy6b1UGUL7nnUz-Y~HWSuzStffT6Iib9ckO0CrZx-4cLNVCZ~tfA4tZAeUofDT0~YCX5YGPp3fYVg__"
                   }
                   alt=""
                 />{" "}
@@ -108,19 +124,23 @@ function ChatSection(props: ChatSectionProps) {
         <div className="flex flex-col items-center justify-center">
           {!submitted && (
             <div className="flex flex-col items-center justify-center">
-              <h1 className="text-[18px] font-semibold">Ask Elon Anything</h1>
-              <span className="text-[12px] font-normal">
+              <h1 className="text-[18px] font-semibold text-[#241E30]">
+                Ask Elon Anything
+              </h1>
+              <span className="text-[12px] font-normal text-[#241E30CC]">
                 Elon Musk will respond solely based on his
               </span>
 
-              <span className="text-[12px] font-normal">shared Tweets.</span>
+              <span className="text-[12px] font-normal text-[#241E30]">
+                shared Tweets.
+              </span>
               <div className="mt-[20px]">
                 {presetQuestions.map((question, index) => (
                   <div
                     key={index}
                     style={{
                       backgroundColor:
-                        selectedQuestion === question ? "#5C1EDF" : "#E8E2F5",
+                        selectedQuestion === question ? "#5C1EDF" : "#5C1EDF1A",
                       color:
                         selectedQuestion === question ? "white" : "#5C1EDF",
                     }}
@@ -142,7 +162,9 @@ function ChatSection(props: ChatSectionProps) {
             <span>
               <NewChat />
             </span>{" "}
-            <span className="cursor-pointer">Start new chat</span>
+            <span className="cursor-pointer text-[#241E30]" onClick={clearChat}>
+              Start new chat
+            </span>
           </div>
         </div>
         <div className="bg-[#ECEBEC] text-[12px] font-semibold flex items-center py-1 px-[7px] rounded-[28px]">
@@ -150,7 +172,7 @@ function ChatSection(props: ChatSectionProps) {
             <span>
               <Share />
             </span>{" "}
-            <span onClick={openModal} className="cursor-pointer">
+            <span onClick={openModal} className="cursor-pointer text-[#241E30]">
               Share chat
             </span>
             <ShareChatModal
@@ -164,10 +186,25 @@ function ChatSection(props: ChatSectionProps) {
       </div>
 
       {/* Input field for new messages */}
-      <div className="flex items-center p-2 bg-white relative mt-[20px]">
-        <div className="absolute left-[12px] bottom-[19px]  z-5 ">
-          <Clipicon />
+      <div className="flex items-center p-2 bg-white relative mt-[10px]">
+        <div className="absolute left-[12px] bottom-[20px] z-5">
+          <div onClick={handleClipiconClick}>
+            <Clipicon />
+          </div>
         </div>
+        {/* Hidden file input element */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".png,.jpg,.jpeg,.gif,.bmp"
+          onChange={handleFileUpload}
+          style={{
+            display: "none",
+            position: "absolute",
+            bottom: "30px",
+            left: "12px",
+          }}
+        />
 
         <Textarea
           ref={textareaRef}
@@ -183,17 +220,24 @@ function ChatSection(props: ChatSectionProps) {
               e.target.style.height = "48px";
             }
           }}
+          onPaste={(e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+            setTimeout(() => {
+              e.currentTarget.style.height = "auto";
+              e.currentTarget.style.height =
+                e.currentTarget.scrollHeight + "px";
+            }, 0);
+          }}
         />
 
-        <div className="absolute right-[12px] bottom-[15px] z-5 ">
+        <div className="absolute right-[10px] bottom-[15px] z-5 ">
           <button
-            className={`bg-purple-600 text-white rounded-full p-2 ${
+            className={`bg-[#5C1EDFB2] text-white rounded-full p-2 ${
               !inputValue && "opacity-50 cursor-not-allowed"
             }`}
             onClick={handleSubmit}
             disabled={!inputValue}
           >
-            <SubmitIcon />
+            <Arrow />
           </button>
         </div>
       </div>

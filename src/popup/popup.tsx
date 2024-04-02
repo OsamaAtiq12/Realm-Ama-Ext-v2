@@ -6,7 +6,7 @@ import ChatSection from "../Pages/ChatSection";
 import Profile from "../Components/Profile";
 const Popup = () => {
     return (
-        <div className="p-[20px] bg-[#F0EDEB]">
+        <div className="p-[20px] bg-[#F0EDEB] h-full">
         <Header />
   
         <Profile />

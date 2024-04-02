@@ -17,36 +17,42 @@ function CustomDropdown() {
             <div>
               <div>
                 <Dropdown.Trigger>
-                  <Chip
-                    iconRight={
-                      <ControlsChevronDownSmall
-                        className={`text-[#5C1EDF]  text-moon-24 text-trunks ${
-                          open && "rotate-180"
-                        }`}
-                      />
-                    }
-                  >
-                    <Dollar />{" "}
-                    <span className="text-[#5C1EDF] font-semibold text-[14px]">
-                     10 Credits
-                    </span>
-                  </Chip>
+                  <span>
+                    <div className="bg-[#5C1EDF1A] p-[8px] flex gap-1 items-center rounded-[26px]">
+                      <span>
+                        <Dollar />
+                      </span>
+                      <span className="text-[#5C1EDF] font-semibold text-[14px] ">
+                        10 Credits
+                      </span>
+                      <span>
+                        <ControlsChevronDownSmall
+                          className={`text-[#5C1EDF] pl-[6px] text-moon-24 text-trunks ${
+                            open && "rotate-180"
+                          }`}
+                        />
+                      </span>
+                    </div>
+                  </span>
                 </Dropdown.Trigger>
               </div>
 
               <div>
-                <Dropdown.Options className="font-semibold bg-white text-[14px]  mr-2 ml-10 ">
-                  <Dropdown.Option >
+                <Dropdown.Options className="font-semibold bg-white text-[14px]  mr-2 ml-10  ">
+                  <Dropdown.Option>
                     <div className="p-4 shadow-md rounded-[8px]">
-                      <div className="flex gap-2 items-center justify-between  rounded-lg  bg-[#E8E2F5] p-3">
-                        <span className="text-sm ">
-                          Sign up to earn 50 bonus credits and 10 credits daily.
+                      <div className="flex rounded-lg  items-center  bg-[#E8E2F5] p-3 gap-[10px]">
+                        <span className="flex-shrink-0">
+                          Sign up to earn 50 bonus <br />
+                          credits and 10 credits daily.
                         </span>
-                        <button className="bg-[#7c3aed] basis-[60%]  text-white px-4 py-2 rounded-md h-full flex items-center">
-                          Sign up
-                        </button>
-                      </div>
 
+                        <div>
+                          <button className="bg-[#7c3aed] text-white px-[12px] h-[28px] py-3 rounded-md flex items-center justify-center max-w-[61px] whitespace-nowrap">
+                            Sign up
+                          </button>
+                        </div>
+                      </div>
                       <div className="mt-2">
                         <h1 className="text-[22px] font-semibold">
                           You are on the{" "}
@@ -59,13 +65,12 @@ function CustomDropdown() {
                         credit. Upgrade to earn more.
                       </div>
 
-                     <div className="flex justify-end">
-                     <button className="bg-black basis-[50%]  text-white  py-2 rounded-md">
-                    Upgrade
+                      <div className="flex justify-end">
+                        <button className="bg-black basis-[50%]  text-white  py-2 rounded-md">
+                          Upgrade
                         </button>
-                     </div>
+                      </div>
                     </div>
-
                   </Dropdown.Option>
                 </Dropdown.Options>
               </div>

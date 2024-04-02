@@ -14,6 +14,7 @@ interface ChatSectionProps {}
 const presetQuestions: string[] = [
   "What drives your passion for space exploration, and how do you see the future of human settlement beyond Earth?",
   "What do you believe are the most significant challenges humanity will face in the next few decades, and how can technology address them?",
+  "What advice would you give to aspiring entrepreneurs who are looking to make a significant impact in the world with their ventures?",
 ];
 
 function ChatSection(props: ChatSectionProps) {
@@ -32,8 +33,20 @@ function ChatSection(props: ChatSectionProps) {
     setSelectedQuestion(question);
     setInputValue(question);
     setSubmitted(false);
+    adjustTextAreaHeight(question); // Call adjustTextAreaHeight function here
   };
 
+  const adjustTextAreaHeight = (value: string) => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      setTimeout(() => {
+        textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+        if (value === "") {
+          textareaRef.current.style.height = "48px";
+        }
+      }, 0);
+    }
+  };
   const handleSubmit = () => {
     if (selectedQuestion || inputValue) {
       setSubmitted(true);
@@ -58,21 +71,22 @@ function ChatSection(props: ChatSectionProps) {
     }
   };
 
-  const adjustTextareaHeight = (textarea) => {
-    textarea.style.height = "auto"; // Reset the height to auto
-    textarea.style.height = textarea.scrollHeight + "px"; // Set the height to match the content
-  };
-
   return (
     <div className="px-8 py-5 bg-white rounded-lg">
       <GptTypeDropDown />
 
-      <div className="border-2 rounded-[16px] p-5 mt-6 h-[326px] overflow-auto">
+      <div
+        className={`${
+          !submitted ? "border-2" : ""
+        } rounded-[16px] p-5 mt-2 h-[440px] overflow-auto`}
+      >
         {/* Chat messages */}
         {chatMessages.map((message, index) => (
           <div key={index}>
-            <div className="text-sm mb-2 text-left p-3 text-white bg-[#5C1EDF] border rounded-tl-lg rounded-tr-lg rounded-bl-lg relative">
-              {message}
+            <div className="flex justify-end">
+              <div className="text-sm mb-2 text-left p-3 inline-block  text-white font-normal text-[12px] bg-[#5C1EDF] border rounded-tl-lg rounded-tr-lg rounded-bl-lg relative">
+                {message}
+              </div>
             </div>
             {/* Loading indicator for each message */}
             {loadingStates[index] && (
@@ -93,12 +107,13 @@ function ChatSection(props: ChatSectionProps) {
 
         <div className="flex flex-col items-center justify-center">
           {!submitted && (
-            <div>
+            <div className="flex flex-col items-center justify-center">
               <h1 className="text-[18px] font-semibold">Ask Elon Anything</h1>
               <span className="text-[12px] font-normal">
-                Elon Musk will respond solely based on his shared Tweets.
+                Elon Musk will respond solely based on his
               </span>
 
+              <span className="text-[12px] font-normal">shared Tweets.</span>
               <div className="mt-[20px]">
                 {presetQuestions.map((question, index) => (
                   <div
@@ -107,9 +122,9 @@ function ChatSection(props: ChatSectionProps) {
                       backgroundColor:
                         selectedQuestion === question ? "#5C1EDF" : "#E8E2F5",
                       color:
-                        selectedQuestion === question ? "white" : "initial",
+                        selectedQuestion === question ? "white" : "#5C1EDF",
                     }}
-                    className="max-w-[250px] text-[12px] font-normal p-[12px] rounded-[8px] mb-3 cursor-pointer"
+                    className="max-w-[250px] text-[12px]  font-normal p-[12px] rounded-[8px] mb-3 cursor-pointer"
                     onClick={() => handleQuestionClick(question)}
                   >
                     {question}
@@ -150,18 +165,27 @@ function ChatSection(props: ChatSectionProps) {
 
       {/* Input field for new messages */}
       <div className="flex items-center p-2 bg-white relative mt-[20px]">
-        <div className="absolute left-[15px] bottom-[19px]  z-5 ">
+        <div className="absolute left-[12px] bottom-[19px]  z-5 ">
           <Clipicon />
         </div>
 
         <Textarea
-          className="flex-1 focus:ring-0 bg-white px-7 py-0 pt-[10px] h-12 overflow-auto"
+          ref={textareaRef}
+          placeholder="Ask Elon a Question"
+          className="flex-1 focus:outline-0 focus:outline-[#5C1EDF] text-[#241E30] outline-0 bg-white px-7 py-0 pt-[13px] overflow-hidden"
+          style={{ minHeight: "48px", height: inputValue ? "auto" : "48px" }}
           value={inputValue}
           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
             setInputValue(e.target.value);
+            e.target.style.height = "auto";
+            e.target.style.height = e.target.scrollHeight + "px";
+            if (e.target.value === "") {
+              e.target.style.height = "48px";
+            }
           }}
         />
-        <div className="absolute right-[25px] bottom-[15px] z-5 ">
+
+        <div className="absolute right-[12px] bottom-[15px] z-5 ">
           <button
             className={`bg-purple-600 text-white rounded-full p-2 ${
               !inputValue && "opacity-50 cursor-not-allowed"

@@ -152,12 +152,16 @@ function ChatSection(props: ChatSectionProps) {
       <div
         className={`${
           !submitted ? "border-2" : ""
-        } rounded-[16px] p-3 mt-2 h-[460px] overflow-auto`}
+        } rounded-[16px] p-3 mt-2 min-h-[460px]`}
       >
         {chatMessages.map((chatMessage, index) => (
           <div key={index}>
             {chatMessage.type === "user" ? (
               <div className="flex justify-end pt-5 ">
+
+                <div>
+                  
+                </div>
                 <div className="text-sm mb-2 text-left p-3 inline-block  text-white font-normal text-[12px] bg-[#5C1EDF] border rounded-tl-lg rounded-tr-lg rounded-bl-lg relative">
                   {chatMessage.message}
                 </div>

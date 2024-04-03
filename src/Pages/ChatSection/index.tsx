@@ -3,15 +3,12 @@ import { useState, useRef, useEffect } from "react";
 import GptTypeDropDown from "../../Components/GptTypeDropDown";
 import NewChat from "./Assets/NewChat";
 import Share from "./Assets/Share";
-import { Textarea } from "@heathmont/moon-core-tw";
-
 import Clipicon from "./Assets/clipicon";
 import ShareChatModal from "../../Components/ShareChatModal";
 import ChatLoading from "../../Components/ChatLoading";
 import Arrow from "./Assets/arrow";
-import { data } from "autoprefixer";
 import CustomTextArea from "../../Components/TextArea";
-
+import Cross from "./Assets/Cross";
 interface ChatSectionProps {}
 
 const presetQuestions: string[] = [
@@ -31,23 +28,41 @@ function ChatSection(props: ChatSectionProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [botres, setbotres] = useState<string>("");
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null); // State to hold uploaded file
 
+  function truncateFileName(fileName: string): string {
+    const extension = fileName.split('.').pop() || ''; // Extract file extension
+    const truncatedName = fileName.slice(0, 5); // Take the first five characters
+    return `${truncatedName}.${extension}`;
+  }
   const clearChat = () => {
     setChatMessages([]);
   };
   const closeModal = () => setIsOpen(false);
   const openModal = () => setIsOpen(true);
-  const fileInputRef = useRef(null); // Reference to the file input element
+  const fileInputRef = useRef<HTMLInputElement>(null); // Reference to the file input element
 
   const handleClipiconClick = () => {
     // Programmatically trigger click on the file input element
-    fileInputRef.current.click();
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
   };
 
-  const handleFileUpload = (event) => {
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     // Handle file upload logic here
-    const file = event.target.files[0];
-    console.log("Uploaded file:", file);
+    const file = event.target.files && event.target.files[0];
+    if (file) {
+      setUploadedFile(file);
+    }
+  };
+
+  const removeFile = () => {
+    // Function to remove uploaded file
+    setUploadedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""; // Clear the file input
+    }
   };
 
   const handleQuestionClick = (question: string) => {
@@ -61,29 +76,15 @@ function ChatSection(props: ChatSectionProps) {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
       setTimeout(() => {
-        textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+        textareaRef.current.style.height = `${
+          textareaRef.current.scrollHeight
+        }px`;
         if (value === "") {
           textareaRef.current.style.height = "48px";
         }
       }, 0);
     }
   };
-
-  function* streamParagraph(paragraph: string): Generator<string, void, unknown> {
-    for (let char of paragraph) {
-      yield char;
-    }
-  }
-  
-  // Example usage:
-  const paragraph: string = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
-  const stream: Generator<string, void, unknown> = streamParagraph(paragraph);
-  
-  // Iterate over the stream and log each character
-  for (let char of stream) {
-    console.log(char);
-  }
-  
 
   const fetchData = async () => {
     setLoading(true);
@@ -150,33 +151,26 @@ function ChatSection(props: ChatSectionProps) {
       <GptTypeDropDown />
 
       <div
-        className={`${
-          !submitted ? "border-2" : ""
-        } rounded-[16px] p-3 mt-2 min-h-[460px]`}
+        className={`${!submitted ? "border-2" : ""} rounded-[16px] p-3 mt-2 min-h-[460px]`}
       >
         {chatMessages.map((chatMessage, index) => (
           <div key={index}>
             {chatMessage.type === "user" ? (
               <div className="flex justify-end pt-5 ">
-
-                <div>
-                  
-                </div>
+                <div></div>
                 <div className="text-sm mb-2 text-left p-3 inline-block  text-white font-normal text-[12px] bg-[#5C1EDF] border rounded-tl-lg rounded-tr-lg rounded-bl-lg relative">
                   {chatMessage.message}
                 </div>
               </div>
             ) : (
               <div className="flex justify-start pt-5">
-                 <img
-              className="h-6 w-6 rounded-full mr-2 mb-[10px] self-end"
-              src="https://s3-alpha-sig.figma.com/img/e995/f598/85db47d776bf48203cc4e94987f45976?Expires=1713139200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=k3LBMZBJ1h-jewz5lof69GhhtDBrfzaAbBESer37HdhckqLFzKtgaOOOSvVgv1pz8czBBIPx1i4IeapwKenXhVEJj0yoF3vjUpA5cREI0b74T1ynZ8e7hu1n7FgpAHovsFVl9uA6~B1A8MZldsa~h9MiQKpXJBn54ZNkZo4vghDD1s4yjiCP17P7fEqqcgJCZiuhWbHnZGMmvtnyIOHY1-jrtPrpnblBLF6k~HmrvpCpO83MpEGY-feWWM4ZLAUvB9bw06jziPy6b1UGUL7nnUz-Y~HWSuzStffT6Iib9ckO0CrZx-4cLNVCZ~tfA4tZAeUofDT0~YCX5YGPp3fYVg__"
-              alt=""
-            />
+                <img
+                  className="h-6 w-6 rounded-full mr-2 mb-[10px] self-end"
+                  src="https://s3-alpha-sig.figma.com/img/e995/f598/85db47d776bf48203cc4e94987f45976?Expires=1713139200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=k3LBMZBJ1h-jewz5lof69GhhtDBrfzaAbBESer37HdhckqLFzKtgaOOOSvVgv1pz8czBBIPx1i4IeapwKenXhVEJj0yoF3vjUpA5cREI0b74T1ynZ8e7hu1n7FgpAHovsFVl9uA6~B1A8MZldsa~h9MiQKpXJBn54ZNkZo4vghDD1s4yjiCP17P7fEqqcgJCZiuhWbHnZGMmvtnyIOHY1-jrtPrpnblBLF6k~HmrvpCpO83MpEGY-feWWM4ZLAUvB9bw06jziPy6b1UGUL7nnUz-Y~HWSuzStffT6Iib9ckO0CrZx-4cLNVCZ~tfA4tZAeUofDT0~YCX5YGPp3fYVg__"
+                  alt=""
+                />
                 <div className="text-sm mb-2 text-left p-3 inline-block  text-[#241E30] font-normal text-[12px] bg-[#241E300D] border rounded-tl-lg rounded-tr-lg rounded-br-lg relative">
                   {chatMessage.message}
-
-                 
                 </div>
               </div>
             )}
@@ -190,7 +184,8 @@ function ChatSection(props: ChatSectionProps) {
               src="https://s3-alpha-sig.figma.com/img/e995/f598/85db47d776bf48203cc4e94987f45976?Expires=1713139200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=k3LBMZBJ1h-jewz5lof69GhhtDBrfzaAbBESer37HdhckqLFzKtgaOOOSvVgv1pz8czBBIPx1i4IeapwKenXhVEJj0yoF3vjUpA5cREI0b74T1ynZ8e7hu1n7FgpAHovsFVl9uA6~B1A8MZldsa~h9MiQKpXJBn54ZNkZo4vghDD1s4yjiCP17P7fEqqcgJCZiuhWbHnZGMmvtnyIOHY1-jrtPrpnblBLF6k~HmrvpCpO83MpEGY-feWWM4ZLAUvB9bw06jziPy6b1UGUL7nnUz-Y~HWSuzStffT6Iib9ckO0CrZx-4cLNVCZ~tfA4tZAeUofDT0~YCX5YGPp3fYVg__"
               alt=""
             />
-            <ChatLoading /> {/* Assuming ChatLoading component is responsive */}
+            <ChatLoading />{" "}
+            {/* Assuming ChatLoading component is responsive */}
           </div>
         )}
 
@@ -214,8 +209,7 @@ function ChatSection(props: ChatSectionProps) {
                     style={{
                       backgroundColor:
                         selectedQuestion === question ? "#5C1EDF" : "#5C1EDF1A",
-                      color:
-                        selectedQuestion === question ? "white" : "#5C1EDF",
+                      color: selectedQuestion === question ? "white" : "#5C1EDF",
                     }}
                     className="max-w-[250px] text-[12px]  font-normal p-[12px] rounded-[8px] mb-3 cursor-pointer"
                     onClick={() => handleQuestionClick(question)}
@@ -235,7 +229,10 @@ function ChatSection(props: ChatSectionProps) {
             <span>
               <NewChat />
             </span>{" "}
-            <span className="cursor-pointer text-[#241E30]" onClick={clearChat}>
+            <span
+              className="cursor-pointer text-[#241E30]"
+              onClick={clearChat}
+            >
               Start new chat
             </span>
           </div>
@@ -245,7 +242,10 @@ function ChatSection(props: ChatSectionProps) {
             <span>
               <Share />
             </span>{" "}
-            <span onClick={openModal} className="cursor-pointer text-[#241E30]">
+            <span
+              onClick={openModal}
+              className="cursor-pointer text-[#241E30]"
+            >
               Share chat
             </span>
             <ShareChatModal
@@ -259,7 +259,7 @@ function ChatSection(props: ChatSectionProps) {
       </div>
 
       {/* Input field for new messages */}
-      <div className="flex items-center p-2 bg-white relative mt-[10px]">
+      <div className="flex items-center p-2 bg-white relative mt-[10px] flex-col">
         <div className="absolute left-[12px] bottom-[23px] z-5">
           <div onClick={handleClipiconClick}>
             <Clipicon />
@@ -269,7 +269,7 @@ function ChatSection(props: ChatSectionProps) {
         <input
           ref={fileInputRef}
           type="file"
-          accept=".png,.jpg,.jpeg,.gif,.bmp"
+          accept=".png,.jpg,.jpeg,.gif,.bmp,.pdf"
           onChange={handleFileUpload}
           style={{
             display: "none",
@@ -278,23 +278,37 @@ function ChatSection(props: ChatSectionProps) {
             left: "12px",
           }}
         />
+        {uploadedFile && (
+          <div className="absolute left-[90px] top-[24px] transform -translate-x-1/2 bottom-[30px]">
+            <div className="bg-gray-200 self-start mb-2 rounded-md p-1 px-2 flex items-center">
+              <span className="truncate">{truncateFileName(uploadedFile.name)}</span>
+              <button
+                onClick={removeFile}
+                className="ml-2 p-1 rounded-full bg-[#5C1EDF] text-white"
+              >
+               <Cross/>
+              </button>
+            </div>
+            </div>
+          
+        )}
 
-<CustomTextArea
-  value={inputValue}
-  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setInputValue(e.target.value);
-  }}
- 
-  placeholder="Ask Elon a Question"
-/>
+        <CustomTextArea
+          value={inputValue}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+            setInputValue(e.target.value);
+          }}
+          placeholder="Ask Elon a Question"
+          showPlaceholder={!uploadedFile}
+        />
 
         <div className="absolute right-[10px] bottom-[18px] z-5 ">
           <button
             className={`bg-[#5C1EDFB2] text-white rounded-full p-2 ${
-              !inputValue && "opacity-50 cursor-not-allowed"
+              !inputValue && !uploadedFile && "opacity-50 cursor-not-allowed"
             }`}
             onClick={handleSubmit}
-            disabled={!inputValue}
+            disabled={!inputValue && !uploadedFile}
           >
             <Arrow />
           </button>

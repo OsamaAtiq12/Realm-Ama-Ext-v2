@@ -9,7 +9,8 @@ import ChatLoading from "../../Components/ChatLoading";
 import Arrow from "./Assets/arrow";
 import CustomTextArea from "../../Components/TextArea";
 import Cross from "./Assets/Cross";
-interface ChatSectionProps {}
+
+interface ChatSectionProps { }
 
 const presetQuestions: string[] = [
   "What drives your passion for space exploration, and how do you see the future of human settlement beyond Earth?",
@@ -28,18 +29,22 @@ function ChatSection(props: ChatSectionProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [botres, setbotres] = useState<string>("");
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null); // State to hold uploaded file
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]); // State to hold uploaded files
 
   function truncateFileName(fileName: string): string {
     const extension = fileName.split('.').pop() || ''; // Extract file extension
     const truncatedName = fileName.slice(0, 5); // Take the first five characters
     return `${truncatedName}.${extension}`;
   }
+
   const clearChat = () => {
     setChatMessages([]);
   };
+
   const closeModal = () => setIsOpen(false);
+
   const openModal = () => setIsOpen(true);
+
   const fileInputRef = useRef<HTMLInputElement>(null); // Reference to the file input element
 
   const handleClipiconClick = () => {
@@ -51,18 +56,20 @@ function ChatSection(props: ChatSectionProps) {
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     // Handle file upload logic here
-    const file = event.target.files && event.target.files[0];
-    if (file) {
-      setUploadedFile(file);
+    const files = event.target.files;
+    if (files) {
+      const uploadedFilesArray: File[] = [...uploadedFiles]; // Copy existing files
+      for (let i = 0; i < files.length; i++) {
+        uploadedFilesArray.push(files[i]); // Append new files
+      }
+      setUploadedFiles(uploadedFilesArray); // Update state with the appended files
     }
   };
-
-  const removeFile = () => {
+  const removeFile = (index: number) => {
     // Function to remove uploaded file
-    setUploadedFile(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ""; // Clear the file input
-    }
+    const updatedFiles = [...uploadedFiles];
+    updatedFiles.splice(index, 1);
+    setUploadedFiles(updatedFiles);
   };
 
   const handleQuestionClick = (question: string) => {
@@ -76,9 +83,8 @@ function ChatSection(props: ChatSectionProps) {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
       setTimeout(() => {
-        textareaRef.current.style.height = `${
-          textareaRef.current.scrollHeight
-        }px`;
+        textareaRef.current.style.height = `${textareaRef.current.scrollHeight
+          }px`;
         if (value === "") {
           textareaRef.current.style.height = "48px";
         }
@@ -258,8 +264,23 @@ function ChatSection(props: ChatSectionProps) {
         </div>
       </div>
 
-      {/* Input field for new messages */}
-      <div className="flex items-center p-2 bg-white relative mt-[10px] flex-col">
+      {/* Input field for new messages */}.
+      <div className="grid grid-cols-3 gap-2"> {/* Display files in a row */}
+        {uploadedFiles.map((file, index) => (
+          <div key={index} className="flex items-center mb-2 mr-2"> {/* Display each file in a row */}
+            <div className="bg-gray-200 rounded-md p-1 px-2 flex items-center">
+              <span className="truncate">{truncateFileName(file.name)}</span>
+              <button
+                onClick={() => removeFile(index)}
+                className="ml-2 p-1 rounded-full bg-[#5C1EDF] text-white"
+              >
+                <Cross />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="flex items-center p-2 bg-white relative  flex-col">
         <div className="absolute left-[12px] bottom-[23px] z-5">
           <div onClick={handleClipiconClick}>
             <Clipicon />
@@ -270,6 +291,7 @@ function ChatSection(props: ChatSectionProps) {
           ref={fileInputRef}
           type="file"
           accept=".png,.jpg,.jpeg,.gif,.bmp,.pdf"
+          multiple
           onChange={handleFileUpload}
           style={{
             display: "none",
@@ -278,20 +300,7 @@ function ChatSection(props: ChatSectionProps) {
             left: "12px",
           }}
         />
-        {uploadedFile && (
-          <div className="absolute left-[90px] top-[24px] transform -translate-x-1/2 bottom-[30px]">
-            <div className="bg-gray-200 self-start mb-2 rounded-md p-1 px-2 flex items-center">
-              <span className="truncate">{truncateFileName(uploadedFile.name)}</span>
-              <button
-                onClick={removeFile}
-                className="ml-2 p-1 rounded-full bg-[#5C1EDF] text-white"
-              >
-               <Cross/>
-              </button>
-            </div>
-            </div>
-          
-        )}
+
 
         <CustomTextArea
           value={inputValue}
@@ -299,16 +308,15 @@ function ChatSection(props: ChatSectionProps) {
             setInputValue(e.target.value);
           }}
           placeholder="Ask Elon a Question"
-          showPlaceholder={!uploadedFile}
+          
         />
 
         <div className="absolute right-[10px] bottom-[18px] z-5 ">
           <button
-            className={`bg-[#5C1EDFB2] text-white rounded-full p-2 ${
-              !inputValue && !uploadedFile && "opacity-50 cursor-not-allowed"
-            }`}
+            className={`bg-[#5C1EDFB2] text-white rounded-full p-2 ${!inputValue && !uploadedFiles.length && "opacity-50 cursor-not-allowed"
+              }`}
             onClick={handleSubmit}
-            disabled={!inputValue && !uploadedFile}
+            disabled={!inputValue && !uploadedFiles.length}
           >
             <Arrow />
           </button>

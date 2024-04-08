@@ -1,3 +1,38 @@
+import firebase from 'firebase/app';
+import 'firebase/auth'; // If you are using auth
+import 'firebase/firestore'; // If you are using firestore
+import {
+ doc,
+ getDoc,
+ 
+} from "firebase/firestore";
+
+
+import {
+  getAuth,
+  onAuthStateChanged,
+  onIdTokenChanged,
+  signInWithCustomToken,
+} from "firebase/auth";
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+console.log(msg);
+console.log(sender);
+sendResponse("Front the background Script");
+
+});
+// Your web app's Firebase configuration
+var firebaseConfig = {
+  apiKey: "your-api-key",
+  authDomain: "your-auth-domain",
+  projectId: "your-project-id",
+  storageBucket: "your-storage-bucket",
+  messagingSenderId: "your-messaging-sender-id",
+  appId: "your-app-id"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   console.log(msg);
   console.log(sender);

@@ -33,6 +33,7 @@
     "@heathmont/moon-core-tw": "^10.14.0",
     "@heathmont/moon-icons-tw": "^9.28.6",
     "autoprefixer": "^10.4.7",
+    "firebase": "^10.10.0",
     "ignore-loader": "^0.1.2",
     "postcss": "^8.4.14",
     "react-router-dom": "6.2",
